@@ -22,24 +22,21 @@ A Tree-sitter grammar for LTSA (Labelled Transition System Analyser) FSP (Finite
 
 Add the following configuration to your Neovim config (e.g., `init.lua` or in a separate plugin config file):
 
+**Important:** This configuration must be loaded BEFORE running `:TSInstall ltsa`
+
 ```lua
--- Register the LTSA parser
-vim.api.nvim_create_autocmd('User', { 
-  pattern = 'TSUpdate',
-  callback = function()
-    local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-    parser_config.ltsa = {
-      install_info = {
-        url = 'https://github.com/gregovilardo/tree-sitter-ltsa',
-        files = { 'src/parser.c' },
-        branch = 'main',
-        -- Optionally pin to a specific commit:
-        -- revision = 'abc123...',
-      },
-      filetype = 'ltsa',
-    }
-  end
-})
+-- Register the LTSA parser (Modern API for nvim-treesitter v0.9+)
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+parser_config.ltsa = {
+  install_info = {
+    url = "https://github.com/gregovilardo/tree-sitter-ltsa",
+    files = { "src/parser.c" },
+    branch = "main",
+    -- Optionally pin to a specific commit:
+    -- revision = "abc123...",
+  },
+  filetype = "ltsa",
+}
 
 -- Register the language
 vim.treesitter.language.register('ltsa', 'ltsa')
@@ -63,21 +60,18 @@ Then install the parser:
 If you have a local checkout of this repository:
 
 ```lua
-vim.api.nvim_create_autocmd('User', { 
-  pattern = 'TSUpdate',
-  callback = function()
-    local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-    parser_config.ltsa = {
-      install_info = {
-        path = '~/path/to/tree-sitter-ltsa',  -- Adjust to your path
-        files = { 'src/parser.c' },
-      },
-      filetype = 'ltsa',
-    }
-  end
-})
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+parser_config.ltsa = {
+  install_info = {
+    path = '~/path/to/tree-sitter-ltsa',  -- Adjust to your path
+    files = { 'src/parser.c' },
+  },
+  filetype = 'ltsa',
+}
 
 vim.treesitter.language.register('ltsa', 'ltsa')
+vim.filetype.add({ extension = { lts = 'ltsa' } })
+```
 vim.filetype.add({ extension = { lts = 'ltsa' } })
 ```
 

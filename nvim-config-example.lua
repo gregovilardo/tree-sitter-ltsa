@@ -6,23 +6,21 @@
 --   - lua/plugins/ltsa.lua (if using a modular config)
 --   - As part of your nvim-treesitter setup
 
+-- IMPORTANT: This configuration must be loaded BEFORE running :TSInstall ltsa
+
 -- Option 1: GitHub installation (recommended for most users)
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'TSUpdate',
-  callback = function()
-    local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-    parser_config.ltsa = {
-      install_info = {
-        url = 'https://github.com/gregovilardo/tree-sitter-ltsa',
-        files = { 'src/parser.c' },
-        branch = 'main',
-        -- Optional: Pin to a specific commit for stability
-        -- revision = 'abc123...',
-      },
-      filetype = 'ltsa',
-    }
-  end,
-})
+-- Modern nvim-treesitter API (v0.9+)
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+parser_config.ltsa = {
+  install_info = {
+    url = "https://github.com/gregovilardo/tree-sitter-ltsa",
+    files = { "src/parser.c" },
+    branch = "main",
+    -- Optional: Pin to a specific commit for stability
+    -- revision = "abc123...",
+  },
+  filetype = "ltsa",
+}
 
 -- Register the language with Neovim's treesitter
 vim.treesitter.language.register('ltsa', 'ltsa')
@@ -44,9 +42,6 @@ vim.filetype.add({
 --   indent = {
 --     enable = true,
 --   },
---   fold = {
---     enable = true,
---   },
 -- })
 
 -- After adding this configuration:
@@ -60,14 +55,34 @@ vim.filetype.add({
 
 -- Uncomment and adjust the following if you have a local checkout:
 
+-- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+-- parser_config.ltsa = {
+--   install_info = {
+--     path = vim.fn.expand('~/path/to/tree-sitter-ltsa'),  -- Adjust this path
+--     files = { 'src/parser.c' },
+--   },
+--   filetype = 'ltsa',
+-- }
+--
+-- vim.treesitter.language.register('ltsa', 'ltsa')
+-- vim.filetype.add({ extension = { lts = 'ltsa' } })
+
+--------------------------------------------------------------------------------
+-- Legacy API (for older nvim-treesitter versions, pre-0.9)
+--------------------------------------------------------------------------------
+
+-- If you're using an older version of nvim-treesitter and get API errors,
+-- try this version instead:
+
 -- vim.api.nvim_create_autocmd('User', {
 --   pattern = 'TSUpdate',
 --   callback = function()
 --     local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
 --     parser_config.ltsa = {
 --       install_info = {
---         path = vim.fn.expand('~/path/to/tree-sitter-ltsa'),  -- Adjust this path
+--         url = 'https://github.com/gregovilardo/tree-sitter-ltsa',
 --         files = { 'src/parser.c' },
+--         branch = 'main',
 --       },
 --       filetype = 'ltsa',
 --     }
@@ -76,3 +91,4 @@ vim.filetype.add({
 --
 -- vim.treesitter.language.register('ltsa', 'ltsa')
 -- vim.filetype.add({ extension = { lts = 'ltsa' } })
+
