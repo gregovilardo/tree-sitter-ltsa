@@ -1,0 +1,43 @@
+{
+  "name": "tree-sitter-ltsa",
+  "version": "0.1.0",
+  "description": "Tree-sitter grammar for LTSA (Labelled Transition System Analyser)",
+  "main": "bindings/node",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gregovilardo/tree-sitter-ltsa.git"
+  },
+  "keywords": [
+    "tree-sitter",
+    "ltsa",
+    "fsp",
+    "parser",
+    "neovim",
+    "syntax-highlighting"
+  ],
+  "author": "gregovilardo",
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^2.17.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.20.8"
+  },
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "test": "tree-sitter test",
+    "parse": "tree-sitter parse"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.ltsa",
+      "injection-regex": "^ltsa$",
+      "file-types": [
+        "lts"
+      ],
+      "highlights": "queries/highlights.scm",
+      "indents": "queries/indents.scm",
+      "folds": "queries/folds.scm"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+build/
+*.o
+*.so
+*.dylib
+
+# Tree-sitter generated files (we keep src/parser.c for distribution)
+# If you regenerate, comment out src/parser.c below
+# src/parser.c
+
+# Cargo/Rust build
+target/
+Cargo.lock
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Examples (not included in repo)
+LtsaExamples/
+
+# Documentation files (project-specific)
+MARKDOWN_ERROR_INVESTIGATION.md
+MARKDOWN_FIX_SUMMARY.md
+STATUS.md
+TROUBLESHOOTING.md
+init.lua
+
+# Test output
+test-results/

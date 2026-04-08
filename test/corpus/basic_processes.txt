@@ -1,0 +1,100 @@
+==================
+Simple process
+==================
+
+ONESHOT = (once->STOP).
+
+---
+
+(source_file
+  (process_definition
+    (process_name (identifier))
+    (process_body
+      (local_process
+        (paren_process
+          (local_process
+            (action_prefix
+              (action_label (identifier))
+              (stop_process))))))))
+
+==================
+Traffic light
+==================
+
+TRAFFICLIGHT = (red->orange->green->orange->TRAFFICLIGHT).
+
+---
+
+(source_file
+  (process_definition
+    (process_name (identifier))
+    (process_body
+      (local_process
+        (paren_process
+          (local_process
+            (action_prefix
+              (action_label (identifier))
+              (action_prefix
+                (action_label (identifier))
+                (action_prefix
+                  (action_label (identifier))
+                  (action_prefix
+                    (action_label (identifier))
+                    (process_ref (identifier))))))))))))
+
+==================
+Client-Server composition
+==================
+
+CLIENT = (call->wait->continue->CLIENT).
+SERVER = (request->service->reply->SERVER).
+
+||CLIENT_SERVER = (CLIENT || SERVER)/{call/request, reply/wait}.
+
+---
+
+(source_file
+  (process_definition
+    (process_name (identifier))
+    (process_body
+      (local_process
+        (paren_process
+          (local_process
+            (action_prefix
+              (action_label (identifier))
+              (action_prefix
+                (action_label (identifier))
+                (action_prefix
+                  (action_label (identifier))
+                  (process_ref (identifier))))))))))
+  (process_definition
+    (process_name (identifier))
+    (process_body
+      (local_process
+        (paren_process
+          (local_process
+            (action_prefix
+              (action_label (identifier))
+              (action_prefix
+                (action_label (identifier))
+                (action_prefix
+                  (action_label (identifier))
+                  (process_ref (identifier))))))))))
+  (composite_definition
+    (process_name (identifier))
+    (composite_body
+      (parallel_composition
+        (composite_element
+          (composite_body
+            (parallel_composition
+              (composite_element
+                (process_ref (identifier)))
+              (composite_element
+                (process_ref (identifier)))))
+          (relabeling
+            (relabel_def
+              (action_label (identifier))
+              (action_label (identifier)))
+            (relabel_def
+              (action_label (identifier))
+              (action_label (identifier)))))))))
