@@ -1,94 +1,75 @@
 -- Example Neovim configuration for tree-sitter-ltsa
 -- 
 -- Add this to your Neovim configuration to enable LTSA syntax highlighting
--- You can place this in:
---   - init.lua (directly)
---   - lua/plugins/ltsa.lua (if using a modular config)
---   - As part of your nvim-treesitter setup
+-- IMPORTANT: This must be loaded BEFORE opening any .lts files
 
--- IMPORTANT: This configuration must be loaded BEFORE running :TSInstall ltsa
+-- OPTION 1: GitHub Installation (Recommended)
+-- ============================================
 
--- Option 1: GitHub installation (recommended for most users)
--- Modern nvim-treesitter API (v0.9+)
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-parser_config.ltsa = {
-  install_info = {
-    url = "https://github.com/gregovilardo/tree-sitter-ltsa",
-    files = { "src/parser.c" },
-    branch = "main",
-    -- Optional: Pin to a specific commit for stability
-    -- revision = "abc123...",
-  },
-  filetype = "ltsa",
+-- Step 1: Register the LTSA parser
+require("nvim-treesitter.parsers").ltsa = {
+	install_info = {
+		url = "https://github.com/gregovilardo/tree-sitter-ltsa",
+		files = { "src/parser.c" },
+		branch = "main",
+	},
+	filetype = "ltsa",
 }
 
--- Register the language with Neovim's treesitter
-vim.treesitter.language.register('ltsa', 'ltsa')
+-- Step 2: Register language and filetype detection
+vim.treesitter.language.register("ltsa", "lts")
+vim.filetype.add({ extension = { lts = "ltsa" } })
 
--- Set up filetype detection for .lts files
-vim.filetype.add({
-  extension = {
-    lts = 'ltsa',
-  },
+-- Step 3: Enable treesitter features for LTSA files
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "ltsa",
+	callback = function()
+		vim.treesitter.start() -- Enable syntax highlighting
+		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Enable folding
+		vim.wo.foldmethod = "expr"
+		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- Enable indentation
+	end,
 })
 
--- Optional: Additional nvim-treesitter configuration
--- If you're using nvim-treesitter, you can also add this to enable features:
--- require('nvim-treesitter.configs').setup({
---   ensure_installed = { 'ltsa' },  -- Auto-install ltsa parser
---   highlight = {
---     enable = true,
---   },
---   indent = {
---     enable = true,
---   },
--- })
+-- USAGE:
+-- 1. Add the above configuration to your init.lua or a plugin file
+-- 2. Restart Neovim or reload config
+-- 3. Run: :TSInstall ltsa
+-- 4. Open any .lts file and enjoy syntax highlighting!
 
--- After adding this configuration:
--- 1. Restart Neovim
--- 2. Run :TSInstall ltsa
--- 3. Open a .lts file and enjoy syntax highlighting!
+-- OPTION 2: Local Installation (for development)
+-- ===============================================
 
---------------------------------------------------------------------------------
--- Option 2: Local installation (for development or offline use)
---------------------------------------------------------------------------------
+-- Uncomment and adjust if you have a local checkout:
 
--- Uncomment and adjust the following if you have a local checkout:
-
--- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
--- parser_config.ltsa = {
---   install_info = {
---     path = vim.fn.expand('~/path/to/tree-sitter-ltsa'),  -- Adjust this path
---     files = { 'src/parser.c' },
---   },
---   filetype = 'ltsa',
+-- require("nvim-treesitter.parsers").ltsa = {
+-- 	install_info = {
+-- 		path = vim.fn.expand('~/path/to/tree-sitter-ltsa'),
+-- 		files = { 'src/parser.c' },
+-- 	},
+-- 	filetype = 'ltsa',
 -- }
 --
--- vim.treesitter.language.register('ltsa', 'ltsa')
--- vim.filetype.add({ extension = { lts = 'ltsa' } })
-
---------------------------------------------------------------------------------
--- Legacy API (for older nvim-treesitter versions, pre-0.9)
---------------------------------------------------------------------------------
-
--- If you're using an older version of nvim-treesitter and get API errors,
--- try this version instead:
-
--- vim.api.nvim_create_autocmd('User', {
---   pattern = 'TSUpdate',
---   callback = function()
---     local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
---     parser_config.ltsa = {
---       install_info = {
---         url = 'https://github.com/gregovilardo/tree-sitter-ltsa',
---         files = { 'src/parser.c' },
---         branch = 'main',
---       },
---       filetype = 'ltsa',
---     }
---   end,
--- })
+-- vim.treesitter.language.register("ltsa", "lts")
+-- vim.filetype.add({ extension = { lts = "ltsa" } })
 --
--- vim.treesitter.language.register('ltsa', 'ltsa')
--- vim.filetype.add({ extension = { lts = 'ltsa' } })
+-- vim.api.nvim_create_autocmd("FileType", {
+-- 	pattern = "ltsa",
+-- 	callback = function()
+-- 		vim.treesitter.start()
+-- 		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- 		vim.wo.foldmethod = "expr"
+-- 		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+-- 	end,
+-- })
+
+-- TROUBLESHOOTING:
+-- ================
+-- If syntax highlighting doesn't work:
+-- 1. Verify parser is installed: :TSModuleInfo (look for ltsa)
+-- 2. Check filetype: :set filetype? (should show "ltsa")
+-- 3. Manually copy queries if needed:
+--    mkdir -p ~/.local/share/nvim/site/queries/ltsa
+--    cp /path/to/tree-sitter-ltsa/queries/*.scm ~/.local/share/nvim/site/queries/ltsa/
+-- 4. Reinstall parser: :TSUninstall ltsa then :TSInstall ltsa
 

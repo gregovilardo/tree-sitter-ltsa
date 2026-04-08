@@ -25,27 +25,29 @@ Add the following configuration to your Neovim config (e.g., `init.lua` or in a 
 **Important:** This configuration must be loaded BEFORE running `:TSInstall ltsa`
 
 ```lua
--- Register the LTSA parser (Modern API for nvim-treesitter v0.9+)
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-parser_config.ltsa = {
+-- Register the LTSA parser
+require("nvim-treesitter.parsers").ltsa = {
   install_info = {
     url = "https://github.com/gregovilardo/tree-sitter-ltsa",
     files = { "src/parser.c" },
     branch = "main",
-    -- Optionally pin to a specific commit:
-    -- revision = "abc123...",
   },
   filetype = "ltsa",
 }
 
--- Register the language
-vim.treesitter.language.register('ltsa', 'ltsa')
+-- Register language and filetype detection
+vim.treesitter.language.register("ltsa", "lts")
+vim.filetype.add({ extension = { lts = "ltsa" } })
 
--- Set up filetype detection for .lts files
-vim.filetype.add({
-  extension = {
-    lts = 'ltsa',
-  },
+-- Enable treesitter features for LTSA files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ltsa",
+  callback = function()
+    vim.treesitter.start() -- Enable syntax highlighting
+    vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Enable folding
+    vim.wo.foldmethod = "expr"
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- Enable indentation
+  end,
 })
 ```
 
@@ -60,8 +62,7 @@ Then install the parser:
 If you have a local checkout of this repository:
 
 ```lua
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-parser_config.ltsa = {
+require("nvim-treesitter.parsers").ltsa = {
   install_info = {
     path = '~/path/to/tree-sitter-ltsa',  -- Adjust to your path
     files = { 'src/parser.c' },
@@ -69,8 +70,18 @@ parser_config.ltsa = {
   filetype = 'ltsa',
 }
 
-vim.treesitter.language.register('ltsa', 'ltsa')
-vim.filetype.add({ extension = { lts = 'ltsa' } })
+vim.treesitter.language.register("ltsa", "lts")
+vim.filetype.add({ extension = { lts = "ltsa" } })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ltsa",
+  callback = function()
+    vim.treesitter.start()
+    vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    vim.wo.foldmethod = "expr"
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
+})
 ```
 vim.filetype.add({ extension = { lts = 'ltsa' } })
 ```
