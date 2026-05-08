@@ -308,6 +308,7 @@ module.exports = grammar({
       choice(
         seq($.label_id, ":"),
         seq($.label_id, $.index_ranges, ":"),
+        seq("{", $.prefix_label_item, repeat(seq(",", $.prefix_label_item)), "}", ":"),
         seq("{", $.prefix_label_item, repeat(seq(",", $.prefix_label_item)), "}", "::"),
       ),
 
